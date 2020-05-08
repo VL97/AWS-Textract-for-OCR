@@ -1,0 +1,48 @@
+----------------------
+Needed:
+jupyter-notebook
+boto3		;For AWS SDK for Textract API
+opencv
+----------------------
+How to test:
+1.Place all the images you want to test in the same directory as the Final.ipynb notebook
+2. In the code: Fill AWS keys for TEXTRACT API in the last cell of the notebook.
+3.Execute all the cells : wait for each image as API call is made
+4 .csv file will be created by name extract.csv in the same directory
+----------------------
+Approach:
+Textract API provides bounding box and all corresponding text it finds in an image. I have used above data and some domain knowledge to classify words in License No, Chasis No, Engine No, Reg Date, Mfg Date and Name. 
+----------------------
+License No:
+Ends with 4 digits
+Starts with 2 alphabets from a set of 36 possible values like DL, MH, RJ etc
+Is of 8-10 alphanumeric length (after removing any special characters)
+
+Chasis No:
+is exactly 17 alphanumeric long with 6 last positions as digits or
+is a shorter alphanumeric (as seen in some train images)
+In any case:
+Both appear just after a form field like CH NO, CHASIS NO or CHASSIS NO etc.
+
+Engine No:
+always appears spatially below Chasis no.
+
+Name:
+appears just after a form field which:
+Case1:
+starts with 'NAME'
+ex- 'NAME' or 'NAME & ADDRESS'
+Case 2:
+ends with 'NAME' or 'OWNER':
+ex- 'NAME', 'OWNER NAME', 'NAME OF OWNER' or 'OWNER'
+
+Dates:
+Built-in python's parser extracts all possible dates from all the text strings in the picture. We then sort these dates according to time:
+earliest date will be MFG DATE
+just after it will be REG DATE
+NOTE:
+1. this assumes 'VALID FROM' dates are 'REG DATES'. (if not specified explicitly as REG DT in the RC)
+2. this assumes that RCs do not have DOBs of Owners which i strongly believe that they dont do.
+
+
+
